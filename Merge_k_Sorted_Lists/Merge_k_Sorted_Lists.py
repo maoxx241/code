@@ -20,3 +20,48 @@ class Solution:
             curr = curr.next
             if curr.next: q.put((curr.next.val, list_idx, curr.next))
         return dummy.next
+    
+    def mergeKLists(self, lists: List[ListNode]) -> ListNode:
+        lst=[]
+        for i in range(len(lists)):
+            while lists[i]!=None:
+                lst.append(lists[i].val)
+                lists[i]=lists[i].next
+        if not lst:
+            return None
+        lst.sort()
+        ans=temp=ListNode(lst[0])
+        for i in range(1,len(lst)):
+            temp.next=ListNode(lst[i])
+            temp=temp.next
+        return ans
+
+    def mergeKLists(self, lists):
+        """
+        :type lists: List[ListNode]
+        :rtype: ListNode
+        """
+        amount = len(lists)
+        interval = 1
+        while interval < amount:
+            for i in range(0, amount - interval, interval * 2):
+                lists[i] = self.merge2Lists(lists[i], lists[i + interval])
+            interval *= 2
+        return lists[0] if amount > 0 else lists
+
+    def merge2Lists(self, l1, l2):
+        head = point = ListNode(0)
+        while l1 and l2:
+            if l1.val <= l2.val:
+                point.next = l1
+                l1 = l1.next
+            else:
+                point.next = l2
+                l2 = l1
+                l1 = point.next.next
+            point = point.next
+        if not l1:
+            point.next=l2
+        else:
+            point.next=l1
+        return head.next
